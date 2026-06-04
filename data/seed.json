@@ -1,0 +1,21 @@
+{
+  "monitors": [
+    {
+      "id": "mon_slian_active_folate_30",
+      "productName": "斯利安活性叶酸30粒",
+      "brand": "斯利安",
+      "platform": "taobao",
+      "platforms": ["taobao", "jd", "pdd", "douyin"],
+      "url": "",
+      "floorPrice": 79,
+      "enabled": true,
+      "notes": "待补充商品链接后开始巡检",
+      "lastCheckedAt": "",
+      "lastStatus": "missing_url",
+      "lastPrice": null,
+      "lastError": "",
+      "createdAt": "2026-06-04T00:00:00.000Z",
+      "updatedAt": "2026-06-04T00:00:00.000Z"
+    }
+  ]
+}
