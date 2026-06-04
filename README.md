@@ -35,9 +35,11 @@
    BLOB_READ_WRITE_TOKEN=由 Vercel Blob 自动注入或手动复制
    ```
 
-4. Vercel Cron 已配置在 `vercel.json`，路径是 `/api/scan`，频率是每分钟一次。
+4. Vercel Cron 已配置在 `vercel.json`，路径是 `/api/scan`，Hobby 版本为每天一次。
 
-注意：Vercel Hobby 的 Cron 只能每天一次；要每分钟巡检，需要 Vercel Pro。
+注意：Vercel Hobby 的 Cron 只能每天一次；要每分钟巡检，需要 Vercel Pro，并将 `vercel.json` 里的 `schedule` 改回 `* * * * *`。
+
+未配置 Vercel Blob 时，线上数据会暂存在 Serverless 的临时目录中，冷启动或重新部署后可能丢失。要持久保存任务、事件和证据，请连接 Private Blob 并配置 `BLOB_READ_WRITE_TOKEN`。
 
 ## 当前初始商品
 
