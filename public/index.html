@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>品牌价格监督台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">价</div>
+          <div>
+            <strong>品牌价格监督台</strong>
+            <span>低价监控与告警</span>
+          </div>
+        </div>
+        <nav>
+          <a class="active" href="#monitors">监控任务</a>
+          <a href="#alerts">低价事件</a>
+          <a href="#settings">飞书设置</a>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <h1>低价巡检</h1>
+            <p id="summaryText">正在载入监控数据</p>
+          </div>
+          <button id="scanNowBtn" class="primary-btn" type="button">
+            <span class="icon">↻</span>
+            立即巡检
+          </button>
+        </header>
+
+        <section class="metrics" aria-label="巡检概览">
+          <div>
+            <span>监控商品</span>
+            <strong id="metricMonitors">0</strong>
+          </div>
+          <div>
+            <span>启用任务</span>
+            <strong id="metricEnabled">0</strong>
+          </div>
+          <div>
+            <span>低价事件</span>
+            <strong id="metricAlerts">0</strong>
+          </div>
+          <div>
+            <span>最近巡检</span>
+            <strong id="metricLastRun">-</strong>
+          </div>
+        </section>
+
+        <section id="monitors" class="band">
+          <div class="section-head">
+            <h2>新增监控</h2>
+          </div>
+          <form id="monitorForm" class="monitor-form">
+            <label>
+              商品名称
+              <input name="productName" placeholder="例：某品牌面霜 50ml" required />
+            </label>
+            <label>
+              品牌
+              <input name="brand" placeholder="例：ACME" />
+            </label>
+            <fieldset class="platform-field">
+              <legend>监控平台</legend>
+              <label class="checkline select-all">
+                <input id="platformAll" type="checkbox" checked />
+                全选平台
+              </label>
+              <div class="platform-options">
+                <label class="checkline">
+                  <input name="platforms" type="checkbox" value="taobao" checked />
+                  淘宝/天猫
+                </label>
+                <label class="checkline">
+                  <input name="platforms" type="checkbox" value="jd" checked />
+                  京东
+                </label>
+                <label class="checkline">
+                  <input name="platforms" type="checkbox" value="pdd" checked />
+                  拼多多
+                </label>
+                <label class="checkline">
+                  <input name="platforms" type="checkbox" value="douyin" checked />
+                  抖音电商
+                </label>
+              </div>
+            </fieldset>
+            <label>
+              最低允许价
+              <input name="floorPrice" type="number" min="0.01" step="0.01" placeholder="299.00" required />
+            </label>
+            <label class="wide">
+              商品链接
+              <input name="url" type="url" placeholder="https://..." />
+            </label>
+            <label class="wide">
+              备注
+              <input name="notes" placeholder="例：旗舰店套装价不参与判断" />
+            </label>
+            <button class="primary-btn" type="submit">
+              <span class="icon">＋</span>
+              添加任务
+            </button>
+          </form>
+        </section>
+
+        <section class="band">
+          <div class="section-head">
+            <h2>监控任务</h2>
+            <span id="monitorCount">0 条</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>商品</th>
+                  <th>平台</th>
+                  <th>底价</th>
+                  <th>最近价格</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="monitorRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="alerts" class="band">
+          <div class="section-head">
+            <h2>低价事件</h2>
+            <span id="eventCount">0 条</span>
+          </div>
+          <div id="eventList" class="event-list"></div>
+        </section>
+
+        <section id="settings" class="band">
+          <div class="section-head">
+            <h2>飞书设置</h2>
+          </div>
+          <form id="settingsForm" class="settings-form">
+            <label class="wide">
+              飞书机器人 Webhook
+              <input name="feishuWebhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
+            </label>
+            <label>
+              签名 Secret
+              <input name="feishuSecret" placeholder="飞书机器人签名密钥" />
+            </label>
+            <label>
+              @ 用户 ID
+              <input name="feishuAtUserIds" placeholder="ou_xxx,ou_yyy" />
+            </label>
+            <label>
+              巡检间隔（秒）
+              <input name="scanIntervalSeconds" type="number" min="60" step="30" />
+            </label>
+            <label class="checkline">
+              <input name="feishuAtAll" type="checkbox" />
+              告警时 @ 所有人
+            </label>
+            <label class="checkline">
+              <input name="enableRealScreenshot" type="checkbox" />
+              启用真实页面截图
+            </label>
+            <button class="primary-btn" type="submit">
+              <span class="icon">✓</span>
+              保存设置
+            </button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
