@@ -1,0 +1,21 @@
+{
+  "name": "brand-price-watch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "品牌电商平台低价监控与飞书预警",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.3.0"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.44.0"
+  }
+}
