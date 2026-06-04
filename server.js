@@ -6,7 +6,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR =
+  process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN
+    ? path.join('/tmp', 'price-monitor')
+    : path.join(__dirname, 'data');
 const EVIDENCE_DIR = path.join(DATA_DIR, 'evidence');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
