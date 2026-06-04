@@ -9,7 +9,7 @@
   "crons": [
     {
       "path": "/api/scan",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ],
   "functions": {
