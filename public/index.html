@@ -19,7 +19,7 @@
         <nav>
           <a class="active" href="#monitors">监控任务</a>
           <a href="#alerts">低价事件</a>
-          <a href="#settings">飞书设置</a>
+          <a href="#settings">提醒设置</a>
         </nav>
       </aside>
 
@@ -147,33 +147,60 @@
 
         <section id="settings" class="band">
           <div class="section-head">
-            <h2>飞书设置</h2>
+            <h2>低价提醒</h2>
           </div>
           <form id="settingsForm" class="settings-form">
-            <label class="wide">
-              飞书机器人 Webhook
-              <input name="feishuWebhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
-            </label>
             <label>
-              签名 Secret
-              <input name="feishuSecret" placeholder="飞书机器人签名密钥" />
-            </label>
-            <label>
-              @ 用户 ID
-              <input name="feishuAtUserIds" placeholder="ou_xxx,ou_yyy" />
+              提醒渠道
+              <select name="notificationChannel">
+                <option value="feishu">飞书机器人</option>
+                <option value="dingtalk">钉钉机器人</option>
+              </select>
             </label>
             <label>
               巡检间隔（秒）
               <input name="scanIntervalSeconds" type="number" min="60" step="30" />
             </label>
             <label class="checkline">
-              <input name="feishuAtAll" type="checkbox" />
-              告警时 @ 所有人
-            </label>
-            <label class="checkline">
               <input name="enableRealScreenshot" type="checkbox" />
               启用真实页面截图
             </label>
+            <div class="channel-panel wide" data-channel-panel="feishu">
+              <label>
+                飞书机器人 Webhook
+                <input name="feishuWebhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
+              </label>
+              <label>
+                飞书签名 Secret
+                <input name="feishuSecret" placeholder="飞书机器人签名密钥" />
+              </label>
+              <label>
+                飞书 @ 用户 ID
+                <input name="feishuAtUserIds" placeholder="ou_xxx,ou_yyy" />
+              </label>
+              <label class="checkline">
+                <input name="feishuAtAll" type="checkbox" />
+                飞书告警时 @ 所有人
+              </label>
+            </div>
+            <div class="channel-panel wide" data-channel-panel="dingtalk">
+              <label>
+                钉钉机器人 Webhook
+                <input name="dingtalkWebhook" placeholder="https://oapi.dingtalk.com/robot/send?access_token=..." />
+              </label>
+              <label>
+                钉钉加签 Secret
+                <input name="dingtalkSecret" placeholder="SEC..." />
+              </label>
+              <label>
+                钉钉 @ 手机号
+                <input name="dingtalkAtMobiles" placeholder="13800138000,13900139000" />
+              </label>
+              <label class="checkline">
+                <input name="dingtalkAtAll" type="checkbox" />
+                钉钉告警时 @ 所有人
+              </label>
+            </div>
             <button class="primary-btn" type="submit">
               <span class="icon">✓</span>
               保存设置
