@@ -304,6 +304,18 @@ select:focus {
   font-weight: 700;
 }
 
+.channel-panel {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.channel-panel[hidden] {
+  display: none;
+}
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -453,7 +465,8 @@ td:first-child {
 
   .metrics,
   .monitor-form,
-  .settings-form {
+  .settings-form,
+  .channel-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -473,6 +486,7 @@ td:first-child {
   .metrics,
   .monitor-form,
   .settings-form,
+  .channel-panel,
   nav {
     grid-template-columns: 1fr;
   }
