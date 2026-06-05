@@ -4,10 +4,11 @@
   "private": true,
   "description": "品牌电商平台低价监控与飞书预警",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "check": "node --check server.js"
+    "start": "node lib/app.js",
+    "dev": "node lib/app.js",
+    "check": "node --check lib/app.js"
   },
   "engines": {
     "node": ">=18"
