@@ -1,6 +1,6 @@
 # 品牌电商平台价格监督
 
-这是一个品牌方低价监控 MVP，用于录入品牌、商品名、规格和最低允许价，并持续巡检淘宝、京东、拼多多、抖音等平台页面。一旦识别到低价，会保存证据并通过飞书机器人预警。
+这是一个品牌方低价监控 MVP，用于录入品牌、商品名、规格和最低允许价，并持续巡检淘宝、京东、拼多多、抖音等平台页面。一旦识别到低价，会保存证据并通过飞书或钉钉机器人预警。
 
 ## 本地运行
 
@@ -10,7 +10,7 @@
    cp .env.example .env
    ```
 
-2. 按需填写 `.env` 里的飞书机器人 webhook、签名 secret、@ 用户 ID。
+2. 按需填写 `.env` 里的提醒渠道、机器人 webhook、签名 secret 和 @ 对象。
 
 3. 启动：
 
@@ -31,6 +31,10 @@
    FEISHU_SECRET=
    FEISHU_AT_USER_IDS=
    FEISHU_AT_ALL=false
+   DINGTALK_WEBHOOK=
+   DINGTALK_SECRET=
+   DINGTALK_AT_MOBILES=
+   DINGTALK_AT_ALL=false
    CRON_SECRET=请填写一段随机字符串
    BLOB_READ_WRITE_TOKEN=由 Vercel Blob 自动注入或手动复制
    ```
@@ -59,7 +63,9 @@
 - 定时巡检平台搜索页或指定商品链接，识别常见 HTML / JSON-LD / meta 中的价格。
 - 按“识别价格 < 最低允许价”生成低价事件。
 - 本地保存 HTML 证据；Vercel 部署后保存到 Private Blob。
-- 支持飞书群机器人 webhook、签名、@ 指定用户或 @ 所有人。
+- 支持用户自行选择飞书或钉钉提醒。
+- 飞书支持 webhook、签名、@ 指定用户或 @ 所有人。
+- 钉钉支持 webhook、加签、@ 指定手机号或 @ 所有人。
 
 ## 重要说明
 
