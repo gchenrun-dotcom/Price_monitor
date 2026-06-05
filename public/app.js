@@ -27,6 +27,7 @@ const settingsForm = document.querySelector('#settingsForm');
 const scanNowBtn = document.querySelector('#scanNowBtn');
 const platformAll = document.querySelector('#platformAll');
 const platformCheckboxes = [...document.querySelectorAll('input[name="platforms"]')];
+const channelPanels = [...document.querySelectorAll('[data-channel-panel]')];
 
 platformAll.addEventListener('change', () => {
   platformCheckboxes.forEach((checkbox) => {
@@ -61,12 +62,16 @@ settingsForm.addEventListener('submit', async (event) => {
   const data = Object.fromEntries(form);
   data.scanIntervalSeconds = Number(data.scanIntervalSeconds);
   data.feishuAtAll = form.has('feishuAtAll');
+  data.dingtalkAtAll = form.has('dingtalkAtAll');
   data.enableRealScreenshot = form.has('enableRealScreenshot');
   if (data.feishuSecret === '********') delete data.feishuSecret;
+  if (data.dingtalkSecret === '********') delete data.dingtalkSecret;
   await api('/api/settings', { method: 'PATCH', body: data });
   toast('设置已保存');
   await refresh();
 });
+
+settingsForm.notificationChannel.addEventListener('change', syncNotificationChannel);
 
 scanNowBtn.addEventListener('click', async () => {
   scanNowBtn.disabled = true;
@@ -133,12 +138,18 @@ function renderMetrics() {
 }
 
 function renderSettings() {
+  settingsForm.notificationChannel.value = state.settings.notificationChannel || 'feishu';
   settingsForm.feishuWebhook.value = state.settings.feishuWebhook || '';
   settingsForm.feishuSecret.value = state.settings.feishuSecret || '';
   settingsForm.feishuAtUserIds.value = state.settings.feishuAtUserIds || '';
+  settingsForm.dingtalkWebhook.value = state.settings.dingtalkWebhook || '';
+  settingsForm.dingtalkSecret.value = state.settings.dingtalkSecret || '';
+  settingsForm.dingtalkAtMobiles.value = state.settings.dingtalkAtMobiles || '';
   settingsForm.scanIntervalSeconds.value = state.settings.scanIntervalSeconds || 300;
   settingsForm.feishuAtAll.checked = Boolean(state.settings.feishuAtAll);
+  settingsForm.dingtalkAtAll.checked = Boolean(state.settings.dingtalkAtAll);
   settingsForm.enableRealScreenshot.checked = Boolean(state.settings.enableRealScreenshot);
+  syncNotificationChannel();
 }
 
 function renderMonitors() {
@@ -195,7 +206,7 @@ function renderEvents() {
               <span>底价 ¥${money(event.floorPrice)}</span>
               <span>差额 ¥${money(event.gap)}</span>
               <span>${formatTime(event.createdAt)}</span>
-              <span>${event.notified ? '已通知飞书' : event.notifyError ? `通知失败：${escapeHtml(event.notifyError)}` : '未配置通知'}</span>
+              <span>${event.notified ? `已通知${channelLabel(event.notifyChannel)}` : event.notifyError ? `通知失败：${escapeHtml(event.notifyError)}` : '未配置通知'}</span>
             </div>
           </div>
           <div class="actions">
@@ -236,6 +247,13 @@ function syncPlatformAll() {
   platformAll.indeterminate = checkedCount > 0 && checkedCount < platformCheckboxes.length;
 }
 
+function syncNotificationChannel() {
+  const selected = settingsForm.notificationChannel.value || 'feishu';
+  channelPanels.forEach((panel) => {
+    panel.hidden = panel.dataset.channelPanel !== selected;
+  });
+}
+
 function platformLabel(platforms) {
   const values = Array.isArray(platforms) ? platforms : [platforms];
   return values.map((platform) => platformNames[platform] || platform).join('、');
@@ -243,6 +261,10 @@ function platformLabel(platforms) {
 
 function monitorTitle(item) {
   return [item.brand, item.productName, item.spec].filter(Boolean).join(' ');
+}
+
+function channelLabel(channel) {
+  return { feishu: '飞书', dingtalk: '钉钉' }[channel] || '提醒渠道';
 }
 
 function money(value) {
