@@ -60,12 +60,16 @@
           </div>
           <form id="monitorForm" class="monitor-form">
             <label>
-              商品名称
-              <input name="productName" placeholder="例：某品牌面霜 50ml" required />
+              品牌
+              <input name="brand" placeholder="例：斯利安" required />
             </label>
             <label>
-              品牌
-              <input name="brand" placeholder="例：ACME" />
+              商品名
+              <input name="productName" placeholder="例：活性叶酸" required />
+            </label>
+            <label>
+              规格
+              <input name="spec" placeholder="例：30粒" required />
             </label>
             <fieldset class="platform-field">
               <legend>监控平台</legend>
@@ -97,8 +101,8 @@
               <input name="floorPrice" type="number" min="0.01" step="0.01" placeholder="299.00" required />
             </label>
             <label class="wide">
-              商品链接
-              <input name="url" type="url" placeholder="https://..." />
+              指定商品链接（可选）
+              <input name="url" type="url" placeholder="不填则按品牌、商品名、规格做全平台巡检" />
             </label>
             <label class="wide">
               备注
