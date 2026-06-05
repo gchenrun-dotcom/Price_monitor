@@ -19,8 +19,7 @@ const statusNames = {
   ok: '正常',
   alert: '低价',
   error: '异常',
-  no_price: '未识别价格',
-  missing_url: '待补链接'
+  no_price: '未识别价格'
 };
 
 const monitorForm = document.querySelector('#monitorForm');
@@ -97,7 +96,7 @@ document.addEventListener('click', async (event) => {
   const deleteBtn = event.target.closest('[data-delete]');
   if (deleteBtn) {
     const monitor = state.monitors.find((item) => item.id === deleteBtn.dataset.delete);
-    if (!confirm(`删除“${monitor.productName}”？`)) return;
+    if (!confirm(`删除“${monitorTitle(monitor)}”？`)) return;
     await api(`/api/monitors/${monitor.id}`, { method: 'DELETE' });
     toast('任务已删除');
     await refresh();
@@ -129,7 +128,7 @@ function renderMetrics() {
   document.querySelector('#metricLastRun').textContent = latestRun ? formatTime(latestRun.finishedAt) : '-';
   document.querySelector('#summaryText').textContent =
     state.scanner.inProgress
-      ? '后台正在巡检商品链接'
+      ? '后台正在巡检监控任务'
       : `每 ${state.settings.scanIntervalSeconds || 300} 秒自动巡检一次`;
 }
 
@@ -157,8 +156,8 @@ function renderMonitors() {
       return `
         <tr>
           <td class="title-cell">
-            ${monitor.url ? `<a href="${escapeAttr(monitor.url)}" target="_blank" rel="noreferrer">${escapeHtml(monitor.productName)}</a>` : `<strong>${escapeHtml(monitor.productName)}</strong>`}
-            <small>${escapeHtml(monitor.brand || '未填写品牌')} · ${escapeHtml(monitor.notes || '无备注')}</small>
+            ${monitor.url ? `<a href="${escapeAttr(monitor.url)}" target="_blank" rel="noreferrer">${escapeHtml(monitorTitle(monitor))}</a>` : `<strong>${escapeHtml(monitorTitle(monitor))}</strong>`}
+            <small>${monitor.url ? '指定链接' : '全平台搜索'} · ${escapeHtml(monitor.notes || '无备注')}</small>
           </td>
           <td>${platformLabel(monitor.platforms || monitor.platform)}</td>
           <td>¥${money(monitor.floorPrice)}</td>
@@ -189,7 +188,7 @@ function renderEvents() {
       (event) => `
         <article class="event-item">
           <div>
-            <h3>${escapeHtml(event.productName)}</h3>
+            <h3>${escapeHtml(monitorTitle(event))}</h3>
             <div class="event-meta">
               <span>${platformLabel(event.platforms || event.platform)}</span>
               <span>识别价 <b class="event-price">¥${money(event.price)}</b></span>
@@ -200,7 +199,7 @@ function renderEvents() {
             </div>
           </div>
           <div class="actions">
-            <a class="ghost-btn" href="${escapeAttr(event.url)}" target="_blank" rel="noreferrer">商品</a>
+            ${event.url ? `<a class="ghost-btn" href="${escapeAttr(event.url)}" target="_blank" rel="noreferrer">页面</a>` : ''}
             <a class="primary-btn" href="${escapeAttr(event.evidenceUrl)}" target="_blank" rel="noreferrer">证据</a>
           </div>
         </article>
@@ -240,6 +239,10 @@ function syncPlatformAll() {
 function platformLabel(platforms) {
   const values = Array.isArray(platforms) ? platforms : [platforms];
   return values.map((platform) => platformNames[platform] || platform).join('、');
+}
+
+function monitorTitle(item) {
+  return [item.brand, item.productName, item.spec].filter(Boolean).join(' ');
 }
 
 function money(value) {
