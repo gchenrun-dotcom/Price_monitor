@@ -19,7 +19,7 @@
         <nav>
           <a class="active" href="#monitors">监控任务</a>
           <a href="#alerts">低价事件</a>
-          <a href="#settings">提醒设置</a>
+          <a href="#settings">采集与提醒</a>
         </nav>
       </aside>
 
@@ -147,9 +147,24 @@
 
         <section id="settings" class="band">
           <div class="section-head">
-            <h2>低价提醒</h2>
+            <h2>采集与提醒</h2>
           </div>
           <form id="settingsForm" class="settings-form">
+            <label>
+              采集方式
+              <select name="priceCollector">
+                <option value="justone">Just One API</option>
+                <option value="page">页面抓取兜底</option>
+              </select>
+            </label>
+            <label>
+              Just One API 地址
+              <input name="justOneBaseUrl" placeholder="https://api.justoneapi.com" />
+            </label>
+            <label class="wide">
+              Just One API Token
+              <input name="justOneToken" placeholder="在 Just One 后台获取的 token" />
+            </label>
             <label>
               提醒渠道
               <select name="notificationChannel">

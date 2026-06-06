@@ -64,6 +64,7 @@ settingsForm.addEventListener('submit', async (event) => {
   data.feishuAtAll = form.has('feishuAtAll');
   data.dingtalkAtAll = form.has('dingtalkAtAll');
   data.enableRealScreenshot = form.has('enableRealScreenshot');
+  if (data.justOneToken === '********') delete data.justOneToken;
   if (data.feishuSecret === '********') delete data.feishuSecret;
   if (data.dingtalkSecret === '********') delete data.dingtalkSecret;
   await api('/api/settings', { method: 'PATCH', body: data });
@@ -138,6 +139,9 @@ function renderMetrics() {
 }
 
 function renderSettings() {
+  settingsForm.priceCollector.value = state.settings.priceCollector || 'justone';
+  settingsForm.justOneBaseUrl.value = state.settings.justOneBaseUrl || 'https://api.justoneapi.com';
+  settingsForm.justOneToken.value = state.settings.justOneToken || '';
   settingsForm.notificationChannel.value = state.settings.notificationChannel || 'feishu';
   settingsForm.feishuWebhook.value = state.settings.feishuWebhook || '';
   settingsForm.feishuSecret.value = state.settings.feishuSecret || '';
