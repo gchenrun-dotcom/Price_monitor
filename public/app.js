@@ -259,7 +259,7 @@ function renderPriceRecordRows(records) {
           <td>${priceOrDash(record.pagePrice)}</td>
           <td>${discountText(record)}</td>
           <td><b class="event-price">${priceOrDash(record.finalPrice ?? record.price)}</b></td>
-          <td>${escapeHtml(record.collector === 'page' ? '页面抓取' : 'Just One')}</td>
+          <td>${escapeHtml(collectorText(record))}</td>
           <td>${record.screenshotUrl ? `<a class="ghost-btn" href="${escapeAttr(record.screenshotUrl)}" target="_blank" rel="noreferrer">截图</a>` : escapeHtml(screenshotLabel(record))}</td>
           <td>${record.evidenceUrl ? `<a class="ghost-btn" href="${escapeAttr(record.evidenceUrl)}" target="_blank" rel="noreferrer">证据</a>` : '-'}</td>
         </tr>
@@ -369,6 +369,11 @@ function screenshotLabel(record) {
   if (record.screenshotStatus === 'disabled') return '截图未启用';
   if (record.screenshotStatus === 'failed') return record.screenshotError || '截图失败';
   return '无截图';
+}
+
+function collectorText(record) {
+  const source = record.collector === 'page' ? '页面抓取' : 'Just One';
+  return record.priceSource ? `${source} · ${record.priceSource}` : source;
 }
 
 function money(value) {
