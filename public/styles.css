@@ -384,8 +384,51 @@ td:first-child {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+}
+
+.price-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.price-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfd;
+}
+
+.price-card h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.price-card span,
+.muted-line {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.price-card strong {
+  color: var(--danger);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.price-card p {
+  min-height: 38px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
 .event-list {
@@ -460,10 +503,11 @@ td:first-child {
   }
 
   nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .metrics,
+  .price-card-grid,
   .monitor-form,
   .settings-form,
   .channel-panel {
@@ -484,6 +528,7 @@ td:first-child {
   }
 
   .metrics,
+  .price-card-grid,
   .monitor-form,
   .settings-form,
   .channel-panel,

@@ -18,6 +18,7 @@
         </div>
         <nav>
           <a class="active" href="#monitors">监控任务</a>
+          <a href="#records">价格记录</a>
           <a href="#alerts">低价事件</a>
           <a href="#settings">采集与提醒</a>
         </nav>
@@ -137,6 +138,32 @@
           </div>
         </section>
 
+        <section id="records" class="band">
+          <div class="section-head">
+            <h2>价格记录</h2>
+            <span id="priceRecordCount">0 条</span>
+          </div>
+          <div id="currentPriceCards" class="price-card-grid"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>巡检时间</th>
+                  <th>商品</th>
+                  <th>平台</th>
+                  <th>页面价</th>
+                  <th>优惠方式</th>
+                  <th>到手价</th>
+                  <th>采集源</th>
+                  <th>截图</th>
+                  <th>证据</th>
+                </tr>
+              </thead>
+              <tbody id="priceRecordRows"></tbody>
+            </table>
+          </div>
+        </section>
+
         <section id="alerts" class="band">
           <div class="section-head">
             <h2>低价事件</h2>
@@ -165,6 +192,14 @@
               Just One API Token
               <input name="justOneToken" placeholder="在 Just One 后台获取的 token" />
             </label>
+            <label class="wide">
+              截图 API URL 模板
+              <input name="screenshotApiUrlTemplate" placeholder="https://example.com/capture?access_key={token}&url={url}&full_page=true" />
+            </label>
+            <label>
+              截图 API Token
+              <input name="screenshotApiToken" placeholder="截图服务 token" />
+            </label>
             <label>
               提醒渠道
               <select name="notificationChannel">
@@ -177,8 +212,8 @@
               <input name="scanIntervalSeconds" type="number" min="60" step="30" />
             </label>
             <label class="checkline">
-              <input name="enableRealScreenshot" type="checkbox" />
-              启用真实页面截图
+              <input name="screenshotEnabled" type="checkbox" />
+              启用外部截图 API
             </label>
             <div class="channel-panel wide" data-channel-panel="feishu">
               <label>

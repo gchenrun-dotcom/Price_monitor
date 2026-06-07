@@ -30,6 +30,9 @@
    PRICE_COLLECTOR=justone
    JUST_ONE_BASE_URL=https://api.justoneapi.com
    JUST_ONE_TOKEN=从 Just One 后台获取
+   SCREENSHOT_ENABLED=true
+   SCREENSHOT_API_URL_TEMPLATE=https://example-screenshot-api.com/capture?access_key={token}&url={url}&full_page=true
+   SCREENSHOT_API_TOKEN=截图服务 token
    FEISHU_WEBHOOK=
    FEISHU_SECRET=
    FEISHU_AT_USER_IDS=
@@ -66,6 +69,9 @@
 - 默认通过 Just One API 调用淘宝/天猫、京东、抖音商品搜索接口，并尝试从指定链接解析商品 ID 后调用详情接口。
 - 拼多多在 Just One 官方接口未配置前会返回明确错误，不使用页面抓取冒充真实数据。
 - 页面抓取保留为手动兜底采集方式，适合作为辅助证据，不建议作为生产价格源。
+- 每次巡检会保存本次最低价命中商品的历史价格记录。
+- 价格记录包含页面价、平台券、红包、国家补贴、估算总优惠、实际到手价、商品链接、JSON 证据和网页价格截图。
+- 网页价格截图通过外部截图 API 生成，模板支持 `{url}` 和 `{token}` 占位符；截图失败时价格记录仍会保存。
 - 按“识别价格 < 最低允许价”生成低价事件。
 - 本地保存 Just One 原始 JSON 或页面 HTML 证据；Vercel 部署后保存到 Private Blob。
 - 支持用户自行选择飞书或钉钉提醒。
@@ -74,4 +80,4 @@
 
 ## 重要说明
 
-Just One API 返回的是第三方数据服务识别或聚合出的平台价格，是否等同于“实际成交价”取决于接口字段和平台活动规则。若需要严格的成交价、券后到手价或订单成交价，仍建议接入品牌授权数据、店铺后台或平台开放能力；页面巡检只适合作为辅助证据采集链路。
+Just One API 返回的是第三方数据服务识别或聚合出的平台价格，是否等同于“实际成交价”取决于接口字段和平台活动规则。优惠券、红包、国家补贴等字段会尽量从接口返回中识别；无法明确拆分时，系统会用页面价减到手价估算总优惠。若需要严格的成交价、券后到手价或订单成交价，仍建议接入品牌授权数据、店铺后台或平台开放能力。

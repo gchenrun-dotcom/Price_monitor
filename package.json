@@ -15,8 +15,5 @@
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0"
-  },
-  "optionalDependencies": {
-    "playwright": "^1.44.0"
   }
 }

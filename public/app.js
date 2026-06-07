@@ -1,6 +1,7 @@
 const state = {
   monitors: [],
   events: [],
+  priceRecords: [],
   runs: [],
   settings: {},
   scanner: {}
@@ -63,8 +64,9 @@ settingsForm.addEventListener('submit', async (event) => {
   data.scanIntervalSeconds = Number(data.scanIntervalSeconds);
   data.feishuAtAll = form.has('feishuAtAll');
   data.dingtalkAtAll = form.has('dingtalkAtAll');
-  data.enableRealScreenshot = form.has('enableRealScreenshot');
+  data.screenshotEnabled = form.has('screenshotEnabled');
   if (data.justOneToken === '********') delete data.justOneToken;
+  if (data.screenshotApiToken === '********') delete data.screenshotApiToken;
   if (data.feishuSecret === '********') delete data.feishuSecret;
   if (data.dingtalkSecret === '********') delete data.dingtalkSecret;
   await api('/api/settings', { method: 'PATCH', body: data });
@@ -122,6 +124,7 @@ function render() {
   renderMetrics();
   renderSettings();
   renderMonitors();
+  renderPriceRecords();
   renderEvents();
 }
 
@@ -142,6 +145,8 @@ function renderSettings() {
   settingsForm.priceCollector.value = state.settings.priceCollector || 'justone';
   settingsForm.justOneBaseUrl.value = state.settings.justOneBaseUrl || 'https://api.justoneapi.com';
   settingsForm.justOneToken.value = state.settings.justOneToken || '';
+  settingsForm.screenshotApiUrlTemplate.value = state.settings.screenshotApiUrlTemplate || '';
+  settingsForm.screenshotApiToken.value = state.settings.screenshotApiToken || '';
   settingsForm.notificationChannel.value = state.settings.notificationChannel || 'feishu';
   settingsForm.feishuWebhook.value = state.settings.feishuWebhook || '';
   settingsForm.feishuSecret.value = state.settings.feishuSecret || '';
@@ -152,7 +157,7 @@ function renderSettings() {
   settingsForm.scanIntervalSeconds.value = state.settings.scanIntervalSeconds || 300;
   settingsForm.feishuAtAll.checked = Boolean(state.settings.feishuAtAll);
   settingsForm.dingtalkAtAll.checked = Boolean(state.settings.dingtalkAtAll);
-  settingsForm.enableRealScreenshot.checked = Boolean(state.settings.enableRealScreenshot);
+  settingsForm.screenshotEnabled.checked = Boolean(state.settings.screenshotEnabled);
   syncNotificationChannel();
 }
 
@@ -187,6 +192,79 @@ function renderMonitors() {
         </tr>
       `;
     })
+    .join('');
+}
+
+function renderPriceRecords() {
+  const records = state.priceRecords || [];
+  document.querySelector('#priceRecordCount').textContent = `${records.length} 条`;
+  renderCurrentPrices(records);
+  renderPriceRecordRows(records);
+}
+
+function renderCurrentPrices(records) {
+  const wrap = document.querySelector('#currentPriceCards');
+  if (!state.monitors.length) {
+    wrap.innerHTML = `<div class="empty">还没有监控商品</div>`;
+    return;
+  }
+
+  wrap.innerHTML = state.monitors
+    .map((monitor) => {
+      const latest = records.find((record) => record.monitorId === monitor.id);
+      if (!latest) {
+        return `
+          <article class="price-card">
+            <h3>${escapeHtml(monitorTitle(monitor))}</h3>
+            <div class="muted-line">暂未形成价格记录</div>
+          </article>
+        `;
+      }
+      return `
+        <article class="price-card">
+          <div>
+            <h3>${escapeHtml(monitorTitle(latest))}</h3>
+            <span>${platformLabel(latest.platforms || latest.platform)} · ${formatTime(latest.createdAt)}</span>
+          </div>
+          <strong>¥${money(latest.finalPrice ?? latest.price)}</strong>
+          <p>${escapeHtml(latest.title || '未识别标题')}</p>
+          <div class="actions">
+            ${latest.url ? `<a class="ghost-btn" href="${escapeAttr(latest.url)}" target="_blank" rel="noreferrer">商品</a>` : ''}
+            ${latest.screenshotUrl ? `<a class="primary-btn" href="${escapeAttr(latest.screenshotUrl)}" target="_blank" rel="noreferrer">截图</a>` : `<span class="pill error">${escapeHtml(screenshotLabel(latest))}</span>`}
+            ${latest.evidenceUrl ? `<a class="ghost-btn" href="${escapeAttr(latest.evidenceUrl)}" target="_blank" rel="noreferrer">证据</a>` : ''}
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+}
+
+function renderPriceRecordRows(records) {
+  const rows = document.querySelector('#priceRecordRows');
+  if (!records.length) {
+    rows.innerHTML = `<tr><td colspan="9"><div class="empty">暂未形成历史价格记录</div></td></tr>`;
+    return;
+  }
+
+  rows.innerHTML = records
+    .map(
+      (record) => `
+        <tr>
+          <td>${formatTime(record.createdAt)}</td>
+          <td class="title-cell">
+            <strong>${escapeHtml(monitorTitle(record))}</strong>
+            <small>${escapeHtml(record.title || '未识别标题')}</small>
+          </td>
+          <td>${platformLabel(record.platforms || record.platform)}</td>
+          <td>${priceOrDash(record.pagePrice)}</td>
+          <td>${discountText(record)}</td>
+          <td><b class="event-price">${priceOrDash(record.finalPrice ?? record.price)}</b></td>
+          <td>${escapeHtml(record.collector === 'page' ? '页面抓取' : 'Just One')}</td>
+          <td>${record.screenshotUrl ? `<a class="ghost-btn" href="${escapeAttr(record.screenshotUrl)}" target="_blank" rel="noreferrer">截图</a>` : escapeHtml(screenshotLabel(record))}</td>
+          <td>${record.evidenceUrl ? `<a class="ghost-btn" href="${escapeAttr(record.evidenceUrl)}" target="_blank" rel="noreferrer">证据</a>` : '-'}</td>
+        </tr>
+      `
+    )
     .join('');
 }
 
@@ -269,6 +347,28 @@ function monitorTitle(item) {
 
 function channelLabel(channel) {
   return { feishu: '飞书', dingtalk: '钉钉' }[channel] || '提醒渠道';
+}
+
+function priceOrDash(value) {
+  return value == null || value === '' ? '-' : `¥${money(value)}`;
+}
+
+function discountText(record) {
+  const parts = [
+    ['券', record.couponAmount],
+    ['红包', record.redPacketAmount],
+    ['国补', record.subsidyAmount],
+    ['估算', record.estimatedDiscount]
+  ]
+    .filter(([, value]) => value != null && value !== '')
+    .map(([label, value]) => `${label} ¥${money(value)}`);
+  return parts.length ? parts.join(' / ') : '未识别';
+}
+
+function screenshotLabel(record) {
+  if (record.screenshotStatus === 'disabled') return '截图未启用';
+  if (record.screenshotStatus === 'failed') return record.screenshotError || '截图失败';
+  return '无截图';
 }
 
 function money(value) {
