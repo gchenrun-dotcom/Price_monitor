@@ -31,8 +31,13 @@
    JUST_ONE_BASE_URL=https://api.justoneapi.com
    JUST_ONE_TOKEN=从 Just One 后台获取
    SCREENSHOT_ENABLED=true
-   SCREENSHOT_API_URL_TEMPLATE=https://jsonlink.io/api/screenshot?api_key={token}&url={url}&full_page=true&format=png&viewport_width=1440
-   SCREENSHOT_API_TOKEN=截图服务 token
+   SCREENSHOT_API_URL_TEMPLATE=https://api.screenshotone.com/take?access_key={token}&url={url}&format=png&full_page=true&viewport_width=1440&viewport_height=1200&delay=5
+   SCREENSHOT_API_TOKEN=ScreenshotOne access key
+   SCREENSHOT_COOKIE_MODE=screenshotone
+   SCREENSHOT_COOKIES_TAOBAO=淘宝登录 Cookie
+   SCREENSHOT_COOKIES_JD=京东登录 Cookie
+   SCREENSHOT_COOKIES_PDD=拼多多登录 Cookie
+   SCREENSHOT_COOKIES_DOUYIN=抖音登录 Cookie
    FEISHU_WEBHOOK=
    FEISHU_SECRET=
    FEISHU_AT_USER_IDS=
@@ -71,7 +76,8 @@
 - 页面抓取保留为手动兜底采集方式，适合作为辅助证据，不建议作为生产价格源。
 - 每次巡检会保存本次最低价命中商品的历史价格记录。
 - 价格记录包含页面价、平台券、红包、国家补贴、估算总优惠、实际到手价、商品链接、JSON 证据和网页价格截图。
-- 网页价格截图通过外部截图 API 生成，模板支持 `{url}` 和 `{token}` 占位符；支持直接返回图片，也支持 JsonLink 这类返回 JSON 图片地址的接口；截图失败时价格记录仍会保存。
+- 网页价格截图通过外部截图 API 生成，模板支持 `{url}`、`{token}` 和 `{cookie}` 占位符；支持直接返回图片，也支持 JsonLink 这类返回 JSON 图片地址的接口；截图失败时价格记录仍会保存。
+- 如果使用 ScreenshotOne，可设置 `SCREENSHOT_COOKIE_MODE=screenshotone`，并通过 `SCREENSHOT_COOKIES_TAOBAO`、`SCREENSHOT_COOKIES_JD` 等环境变量给对应平台截图请求注入登录 Cookie。
 - 如果第三方价格接口没有返回明确商品详情链接，系统不会截图平台搜索页，避免把淘宝/京东登录弹窗、骨架屏误当作价格证据。
 - 按“识别价格 < 最低允许价”生成低价事件。
 - 本地保存 Just One 原始 JSON 或页面 HTML 证据；Vercel 部署后保存到 Private Blob。
