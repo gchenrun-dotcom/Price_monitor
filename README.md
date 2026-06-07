@@ -31,7 +31,7 @@
    JUST_ONE_BASE_URL=https://api.justoneapi.com
    JUST_ONE_TOKEN=从 Just One 后台获取
    SCREENSHOT_ENABLED=true
-   SCREENSHOT_API_URL_TEMPLATE=https://example-screenshot-api.com/capture?access_key={token}&url={url}&full_page=true
+   SCREENSHOT_API_URL_TEMPLATE=https://jsonlink.io/api/screenshot?api_key={token}&url={url}&full_page=true&format=png&viewport_width=1440
    SCREENSHOT_API_TOKEN=截图服务 token
    FEISHU_WEBHOOK=
    FEISHU_SECRET=
@@ -71,7 +71,7 @@
 - 页面抓取保留为手动兜底采集方式，适合作为辅助证据，不建议作为生产价格源。
 - 每次巡检会保存本次最低价命中商品的历史价格记录。
 - 价格记录包含页面价、平台券、红包、国家补贴、估算总优惠、实际到手价、商品链接、JSON 证据和网页价格截图。
-- 网页价格截图通过外部截图 API 生成，模板支持 `{url}` 和 `{token}` 占位符；截图失败时价格记录仍会保存。
+- 网页价格截图通过外部截图 API 生成，模板支持 `{url}` 和 `{token}` 占位符；支持直接返回图片，也支持 JsonLink 这类返回 JSON 图片地址的接口；截图失败时价格记录仍会保存。
 - 按“识别价格 < 最低允许价”生成低价事件。
 - 本地保存 Just One 原始 JSON 或页面 HTML 证据；Vercel 部署后保存到 Private Blob。
 - 支持用户自行选择飞书或钉钉提醒。
